@@ -14,6 +14,14 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+builder.Services.AddControllers(); // Adjust based on your app
+
+// Configure Kestrel to listen on all network interfaces
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000); // HTTP port (change if needed)
+    // options.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps()); // Uncomment for HTTPS
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -29,6 +37,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); // Adjust based on your app
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
